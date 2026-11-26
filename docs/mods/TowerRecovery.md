@@ -6,11 +6,11 @@
 
 ## 安装与卸载
 
-退出游戏，在解压后的发行包根目录执行；`-GamePath`填写实际游戏目录。
+退出游戏，在解压后的发行包根目录执行。安装器自动查找Steam游戏目录，无需固定盘符；如未识别或发现多个安装位置，请按[合集说明](../../README.md)手动传入`-GamePath`。
 
 ```powershell
-& .\Install-TowerRecovery.ps1 -Action Install -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
-& .\Install-TowerRecovery.ps1 -Action Uninstall -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-TowerRecovery.ps1 -Action Install
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-TowerRecovery.ps1 -Action Uninstall
 ```
 
 配置：`BepInEx/config/local.daxia.towerrecovery.cfg`。配置项`General.RestoreVitals`和`General.ClearNewInjuries`分别控制补满与清伤，默认均开启。

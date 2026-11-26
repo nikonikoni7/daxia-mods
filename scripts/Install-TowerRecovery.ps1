@@ -1,12 +1,13 @@
 ﻿[CmdletBinding()]
 param(
     [ValidateSet('Install','Uninstall')][string]$Action = 'Install',
-    [string]$GamePath = 'E:\SteamLibrary\steamapps\common\WulinSH'
+    [string]$GamePath = ''
 )
 $ErrorActionPreference = 'Stop'
 $packageHash = '@TOWER_RECOVERY_SHA256@'
 $gameHash = 'F8393E44423442526DFFBF3AF52F8CCD56FB33769D97E2C7161EBC49D68B3564'
-$game = [IO.Path]::GetFullPath($GamePath).TrimEnd('\','/')
+. (Join-Path $PSScriptRoot 'Resolve-GamePath.ps1')
+$game = Resolve-WulinGamePath -GamePath $GamePath
 $targetDirectory = Join-Path $game 'BepInEx\plugins\TowerRecovery'
 $target = Join-Path $targetDirectory 'TowerRecovery.dll'
 $receipt = Join-Path $targetDirectory '.tower-recovery-receipt'

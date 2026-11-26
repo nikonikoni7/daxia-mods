@@ -8,21 +8,35 @@
 
 从[Releases](https://github.com/nikonikoni7/daxia-mods/releases)下载ZIP及对应SHA-256文件；GitHub的Source code压缩包不含DLL。
 
+先在下载文件所在目录核对ZIP的SHA-256，与下载的`.sha256`文件比较：
+
+```powershell
+Get-FileHash .\DaxiaMods-v1.0.1-Build24794582.zip -Algorithm SHA256
+```
+
 1. 安装BepInEx 6 IL2CPP x64，先启动一次游戏生成本机interop接口，再退出游戏。开发和原生验证使用过6.0.0-be.697；本包不附带加载器、运行时或游戏接口DLL。
-2. 核对下载ZIP的SHA-256并解压。用PowerShell在解压目录运行安装命令，填写实际游戏目录。
+2. 解压ZIP。用PowerShell在解压目录运行安装命令。安装器自动读取Steam注册表和各磁盘游戏库，定位包含Wulin.exe的目录。
 3. 按需安装单个Mod，然后正常启动游戏。配置在游戏的`BepInEx/config`下。
 
 ```powershell
-Get-FileHash .\DaxiaMods-v1.0.0-Build24794582.zip -Algorithm SHA256
-& .\Manage-Mods.ps1 -Action Install -Mod ChestMemo -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
-& .\Manage-Mods.ps1 -Action Uninstall -Mod ChestMemo -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-Mods.ps1 -Action Install -Mod ChestMemo
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-Mods.ps1 -Action Uninstall -Mod ChestMemo
 ```
 
 `Both`仅选择FastFinish和ExploreCamera。TowerRecovery沿用独立安装器和收据：
 
 ```powershell
-& .\Install-TowerRecovery.ps1 -Action Install -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
-& .\Install-TowerRecovery.ps1 -Action Uninstall -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-TowerRecovery.ps1 -Action Install
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-TowerRecovery.ps1 -Action Uninstall
+```
+
+安装器不要求E盘或特定Steam库位置。找不到游戏或发现多个安装目录时，会停止并提示手动指定，不会猜测目标。可以在Steam库中右键游戏，选择“管理 → 浏览本地文件”，复制打开的文件夹路径：
+
+```powershell
+$game = Read-Host '粘贴包含Wulin.exe的游戏文件夹路径'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-Mods.ps1 -Action Install -Mod ChestMemo -GamePath $game
+# 通天塔插件同样支持：
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-TowerRecovery.ps1 -Action Install -GamePath $game
 ```
 
 升级先卸载旧版，再安装新版。保留`.daxia-mods-store`和TowerRecovery插件目录内的收据，以便核验及回退；安装器保留已有配置和其他插件，不管理、替换或卸载前置运行环境。

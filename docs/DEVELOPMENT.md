@@ -8,7 +8,7 @@ Windows、PowerShell、Python 3（`py -3`）。构建使用.NET SDK 8.0.425、�
 
 ```powershell
 py -3 .\scripts\get-sdk.py
-$game = 'E:\SteamLibrary\steamapps\common\WulinSH'
+$game = Read-Host '粘贴本机游戏目录（包含Wulin.exe）'
 $refs = '.\outputs\DaxiaMods\payload'
 New-Item -ItemType Directory -Path "$refs\BepInEx" -Force
 Copy-Item -LiteralPath "$game\dotnet" -Destination "$refs\dotnet" -Recurse

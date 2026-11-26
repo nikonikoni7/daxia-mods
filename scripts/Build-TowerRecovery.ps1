@@ -48,4 +48,5 @@ $hash = Get-FileHash -LiteralPath $dll
 $installer = (Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Install-TowerRecovery.ps1') -Raw -Encoding utf8).Replace('@TOWER_RECOVERY_SHA256@', $hash.Hash)
 [IO.File]::WriteAllText((Join-Path $release 'Install-TowerRecovery.ps1'), $installer)
 Copy-Item -LiteralPath (Join-Path $source 'README.md') -Destination $release
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Resolve-GamePath.ps1') -Destination $release
 $hash

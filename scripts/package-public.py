@@ -13,7 +13,7 @@ def package(plugin_dir,output):
     for mod in mods:
         if not (plugin_dir/(mod['name']+'.dll')).is_file():
             raise ValueError('Missing compiled plugin: '+mod['name'])
-    archive=output/'DaxiaMods-v1.0.0-Build24794582.zip'
+    archive=output/'DaxiaMods-v1.0.1-Build24794582.zip'
     if archive.exists() or archive.with_suffix('.zip.sha256').exists():
         raise FileExistsError('Release already exists; choose a new output directory')
     output.mkdir(parents=True,exist_ok=True)
@@ -24,6 +24,7 @@ def package(plugin_dir,output):
         for name in ['README.md','LICENSE','THIRD_PARTY_NOTICES.md','mods.json','docs/DEVELOPMENT.md','docs/VALIDATION.md']:
             copy(ROOT/name,name)
         copy(ROOT/'scripts/Manage-Mods.ps1','Manage-Mods.ps1')
+        copy(ROOT/'scripts/Resolve-GamePath.ps1','Resolve-GamePath.ps1')
         tower_hash=digest(plugin_dir/'TowerRecovery.dll')
         installer=(ROOT/'scripts/Install-TowerRecovery.ps1').read_text(encoding='utf-8-sig').replace('@TOWER_RECOVERY_SHA256@',tower_hash)
         (stage/'Install-TowerRecovery.ps1').write_text(installer,encoding='utf-8-sig')

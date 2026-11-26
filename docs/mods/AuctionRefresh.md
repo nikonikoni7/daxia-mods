@@ -6,11 +6,11 @@
 
 ## 安装与卸载
 
-退出游戏，在解压后的发行包根目录执行；`-GamePath`填写实际游戏目录。
+退出游戏，在解压后的发行包根目录执行。安装器自动查找Steam游戏目录，无需固定盘符；如未识别或发现多个安装位置，请按[合集说明](../../README.md)手动传入`-GamePath`。
 
 ```powershell
-& .\Manage-Mods.ps1 -Action Install -Mod AuctionRefresh -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
-& .\Manage-Mods.ps1 -Action Uninstall -Mod AuctionRefresh -GamePath 'E:\SteamLibrary\steamapps\common\WulinSH'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-Mods.ps1 -Action Install -Mod AuctionRefresh
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-Mods.ps1 -Action Uninstall -Mod AuctionRefresh
 ```
 
 配置：`BepInEx/config/local.daxia.auctionrefresh.cfg`。已有配置优先保留；修改配置后重新启动游戏。

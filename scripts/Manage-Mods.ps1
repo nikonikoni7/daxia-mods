@@ -1,11 +1,12 @@
 ﻿[CmdletBinding()]
 param(
  [ValidateSet('Install','Uninstall')][string]$Action = 'Install',
- [string]$GamePath = 'E:\SteamLibrary\steamapps\common\WulinSH',
+ [string]$GamePath = '',
  [ValidateSet('Both','FastFinish','ExploreCamera','ChestMemo','CompanionTraining','PerfectRolls','FreeNaming','FiefReuse','FiefPositionFix','ItemSpawner','AuctionRefresh','AuctionSkyLantern','BountyRefresh','QuestTracking','CompanionTravel','AnswerHints','FusionRename','KungfuOrder','FiefLibrary')][string]$Mod = 'Both'
 )
 $ErrorActionPreference = 'Stop'
-$root = [IO.Path]::GetFullPath($GamePath).TrimEnd('\','/')
+. (Join-Path $PSScriptRoot 'Resolve-GamePath.ps1')
+$root = Resolve-WulinGamePath -GamePath $GamePath
 if (!(Test-Path -LiteralPath (Join-Path $root 'Wulin.exe') -PathType Leaf)) { throw '游戏目录错误：找不到Wulin.exe。' }
 if (@(Get-Process -Name Wulin -ErrorAction SilentlyContinue).Count) { throw '请先退出游戏再安装或卸载。' }
 function SafePath([string]$relative) {

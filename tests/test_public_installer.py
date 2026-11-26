@@ -3,7 +3,7 @@ import hashlib,json,os,shutil,subprocess,tempfile,unittest
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-SHELL=shutil.which('pwsh') or 'powershell.exe'
+SHELL=os.environ.get('DAXIA_TEST_POWERSHELL') or shutil.which('pwsh') or 'powershell.exe'
 REQUIRED=['winhttp.dll','BepInEx/core/BepInEx.Unity.IL2CPP.dll','BepInEx/core/0Harmony.dll','BepInEx/interop/Assembly-CSharp.dll']
 
 class InstallerTests(unittest.TestCase):
@@ -12,6 +12,7 @@ class InstallerTests(unittest.TestCase):
         base=Path(self.temp.name);self.game=base/'steamapps/common/WulinSH';self.game.mkdir(parents=True)
         self.pkg=base/'package';self.pkg.mkdir()
         shutil.copy2(ROOT/'scripts/Manage-Mods.ps1',self.pkg)
+        shutil.copy2(ROOT/'scripts/Resolve-GamePath.ps1',self.pkg)
         (self.game/'Wulin.exe').write_text('fixture, never executed')
         (self.game/'GameAssembly.dll').write_bytes(b'game-fixture')
         self.steam=base/'steamapps/appmanifest_1948980.acf'
@@ -28,7 +29,9 @@ class InstallerTests(unittest.TestCase):
     def write_manifest(self):
         (self.pkg/'payload-manifest.json').write_text(json.dumps(self.manifest))
     def run_installer(self,action='Install',mod='FreeNaming',ok=True):
-        run=subprocess.run([SHELL,'-NoProfile','-File',str(self.pkg/'Manage-Mods.ps1'),'-GamePath',str(self.game),'-Action',action,'-Mod',mod],capture_output=True,text=True,encoding='utf-8',errors='replace')
+        # Let each host initialize its own standard modules instead of inheriting PS7 paths through Python.
+        child_env={key:value for key,value in os.environ.items() if key.upper()!='PSMODULEPATH'}
+        run=subprocess.run([SHELL,'-NoProfile','-ExecutionPolicy','Bypass','-File',str(self.pkg/'Manage-Mods.ps1'),'-GamePath',str(self.game),'-Action',action,'-Mod',mod],capture_output=True,text=True,encoding='utf-8',errors='replace',env=child_env)
         self.assertEqual(run.returncode==0,ok,run.stdout+run.stderr)
         return run
     def test_missing_frontend_refuses_without_writes(self):
