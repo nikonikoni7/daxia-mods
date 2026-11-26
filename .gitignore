@@ -1,0 +1,11 @@
+outputs/
+work/
+tools/dotnet/
+references/
+__pycache__/
+*.py[cod]
+.vs/
+.vscode/
+.env
+*.user
+tools/sdk.zip
